@@ -1,8 +1,8 @@
 # Frequency Response Estimation: A Demonstration 
 
-[](./coverpage.png)
+[](coverpage.png)
 
-Welcome to our repository. Here, you'll find a demonstration on how to generate a frequency response using input and output data. This data is primarily derived from pseudo experiments conducted using excitation signals from both pseudo-random binary sequences (PRBS) and sinusoidal signals.
+Welcome to our repository. Here, you'll find a demonstration of generating a frequency response using input and output data. This data is primarily derived from pseudo experiments conducted using excitation signals from both pseudo-random binary sequences (PRBS) and sinusoidal signals.
 
 ## How to Use
 - Initiate by cloning this repository.
