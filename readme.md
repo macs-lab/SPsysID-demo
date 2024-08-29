@@ -1,17 +1,23 @@
-# Demo: Frequency Response Estimation
+# Frequency Response Estimation: A Demonstration 
 
-This repository contains a demo for generating a frequency response using input and output data. The data is generated from experiments using excitation signals from both pseudo-random binary sequence (PRBS) and sinusoidal signals.
+[](./coverpage.png)
 
-## Usage
+Welcome to our repository. Here, you'll find a demonstration on how to generate a frequency response using input and output data. This data is primarily derived from pseudo experiments conducted using excitation signals from both pseudo-random binary sequences (PRBS) and sinusoidal signals.
 
-1. Clone the repository.
-2. Run the sysID_example.m to see the demo in action.
+## How to Use
+- Initiate by cloning this repository.
+- Execute the sysID_example.m file to visualize the demonstration.
 
-## Dependencies
+## Software Requirements
+- Tested on MATLAB 2022
+- Backwards compatible with MATLAB 2015 and subsequent releases
 
-- tested under MATLAB 2022
-- should be compatible for MATLAB 2015 and beyond 
+## References and Further Reading
 
-## License
+- [Notes on system identification with sinusoidal inputs](./sysIDsweepsine.pdf)
+- Course material: [System Identification and Adaptive Control](https://faculty.washington.edu/chx/teaching/ykidac/) 
+- Ioan D. Landau et al. 2011. Adaptive Control: Algorithms, Analysis, and Applications. Springer.
+- Lennart Ljung. System Identification: Theory for the User. 2nd Ed. Prentice Hall
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Licensing
+This project operates under the MIT License. See the [LICENSE](LICENSE) file for more details.

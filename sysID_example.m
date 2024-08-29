@@ -2,7 +2,6 @@
 % sinusoidal and random excitations
 % associated file(s): "simuID.slx" simulink blocks
 % 
-% required functions: add "macs-matlab-toolbox-master" (available at https://github.com/macs-lab/macs-matlab-toolbox to the Matlab path;
 %
 % X. Chen
 % chx@uw.edu
@@ -13,14 +12,16 @@
 % clear all
 
 % Sampling frequency
-Fs = 1024; % change to the actual sampling frequency
+Fs = 1024; % this is determined by the sensor sampling rate, assuming that 
+% the samping rate of input is the same as that of the output
+
 % Generate a set of frequencies to perform the sinusoidal based system ID
 initFreq = 1; % in Hz
-endFreq = 100;
+endFreq = 100; % change to a frequency range that is suitable for your application
 freqPoints = 20;
 FreqRange = logspace(log10(initFreq),log10(endFreq),freqPoints);
 % amplitude
-amp_x = 2*ones(size(FreqRange))'; % change the amplitude to proper values in practice
+amp_x = 2*ones(size(FreqRange))'; % change the amplitude to proper values for your application
 % for data storage
 tCell = cell(size(FreqRange));
 xCell = cell(size(FreqRange));
@@ -29,7 +30,7 @@ BODE_FREQ = zeros(freqPoints,1);
 BODE_ARRAY = zeros(freqPoints,1);
 %% system id based on sinusoidal excitation 
 for ii = 1:freqPoints
-    StopTime = 1/FreqRange(ii)*40; % 40 periods of the sinusoidal
+    StopTime = 1/FreqRange(ii)*40; % 40 periods of the sinusoidal signals
     
     t = 0:1/Fs:StopTime;
     t = t(:);
@@ -42,8 +43,8 @@ for ii = 1:freqPoints
     x = x(:);
     xCell{ii} = x;
     %% now feed the generated x file as the input to the system
-    % the following data are dummies for simulation purpose
-    % make proper CHANGEs to adapt to actual experiments
+    % the following example assumes a first-order system with a transfer
+    % function of 1/(z+0.5)
     num = [1];
     den = [1 0.5];
     sim('simuID')
@@ -55,7 +56,7 @@ for ii = 1:freqPoints
     x = x - mean(x);
     y = y - mean(y);
     if 0
-        %%
+        %% for tuning and debugging
         % plot the signal
         figure(1)
         plot(t,x,t,y);
@@ -65,7 +66,6 @@ for ii = 1:freqPoints
             'Signal y(t):sin(2*pi*t*20+lag)');
     end
     %%
-%     tfestimate(x,y,[],[],[],Fs)
     % X,Y,WINDOW,NOVERLAP,NFFT,Fs
     [Txy,w] = tfestimate(x,y,[],[],[],Fs);
     BODE_FREQ(ii) = FreqRange(ii);
@@ -73,12 +73,12 @@ for ii = 1:freqPoints
         BODE_ARRAY(ii) = Txy(w==FreqRange(ii));
     catch
         if 0
+            %% debugging purpose
             [ampTemp,phaTemp] = twoSine_amplitudeRatio_PhaseLag_direct(x,y,FreqRange(ii)*2*pi);
         else
             [ampTemp,phaTemp] = twoSine_amplitudeRatio_PhaseLag(x,y);
         end
         BODE_ARRAY(ii) = ampTemp * exp(1i*phaTemp);
-%         Txy(w==FreqRange(ii))
     end
 end
 
@@ -104,9 +104,11 @@ Tappli = 0;
 %     Tappli    : Application instant
 prbs = create_prbs(ValUinit, ValAmpli, ValDecal, ValLgReg, ValDivi, Nsamp, Tappli);
 prbs = prbs';
-figure, plot(prbs)
+figure, plot(prbs), title('PRBS random excitation signal')
+xlabel 'Sample'
+ylabel 'Magnitude'
 if 0
-    %%
+    %% debugging purpose
     specPRBs = specCale(prbs,Fs);
     figure, plot(specPRBs.f,specPRBs.amp)
 end
@@ -117,25 +119,25 @@ prbs_8_1_scal2 = prbs*10e-7;
 prbs_8_1_scal50 = prbs*25e-7;
 
 if 0
-    %%
+    %% debugging purpose
     save2tx(prbs_8_1_scal1,'prbs_8_1_scal1.txt');
     save2tx(prbs_8_1_scal2,'prbs_8_1_scal2.txt');
     save2tx(prbs_8_1_scal50,'prbs_8_1_scal50.txt');
 end
 if 0
-    %%
+    %% debugging purpose
     prbs_8_1_scal1 = [prbs_8_1_scal1,zeros(length(prbs_8_1_scal1),2)] ;
     prbs_8_1_scal2 = [prbs_8_1_scal2,zeros(length(prbs_8_1_scal2),2)] ;
     save('prbs_8_1_scal1.txt', 'prbs_8_1_scal1', '-ASCII','-DOUBLE')
     save('prbs_8_1_scal2.txt', 'prbs_8_1_scal2', '-ASCII')
 end
-% start with a small amplitude for safety, gradually incease the amplitude 
+% start with a small amplitude, and gradually incease the amplitude 
 % in practice to find the best signal-to-noise ratio
 x = prbs_8_1_scal1;
 t = 0:1/Fs:(length(x)-1)/Fs;
 t = t(:);
 StopTime = t(end);
-%%
+
 sim('simuID')
 y_prbs_8_1_scal1 = y;
 %%
@@ -147,7 +149,7 @@ y = y - mean(y);
 x = x(500:end);
 y = y(500:end);
 if 0
-    %%
+    %% debugging purpose
     figure,subplot(211),stairs(x),title('input')
     xlim([1,length(x)])
     subplot(212),stairs(y),title('output')
@@ -155,7 +157,7 @@ if 0
 end
 
 if 0
-    %%
+    %% debugging purpose
     hgsave(gcf,'IOdata')
     saveas(gcf, 'IOdata', 'eps')
 end
@@ -172,7 +174,6 @@ BODE_MAG = [20*log10(abs(BODE_ARRAY(:)));mag(freq>max(FreqRange))];
 BODE_PHA = [180/pi*(phase(BODE_ARRAY(:)));pha(freq>max(FreqRange))];
 %%
 figure, xbodeplot(tf(num,den,1/Fs))
-% 
 % figure;
 subplot(211)
 semilogx(BODE_FREQ,BODE_MAG,'r--','linewidth',2);
