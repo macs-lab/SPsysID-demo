@@ -14,7 +14,7 @@ Welcome to our repository. Here, you'll find a demonstration of generating a fre
 
 ## References and Further Reading
 
-- [Notes on system identification with sinusoidal inputs](./sysIDsweepsine.pdf)
+- [Notes on system identification with sinusoidal inputs](./sysID_sweep_sine.pdf)
 - Course material: [System Identification and Adaptive Control](https://faculty.washington.edu/chx/teaching/ykidac/) 
 - Ioan D. Landau et al. 2011. Adaptive Control: Algorithms, Analysis, and Applications. Springer.
 - Lennart Ljung. System Identification: Theory for the User. 2nd Ed. Prentice Hall
